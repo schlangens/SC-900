@@ -1870,6 +1870,271 @@ Look for: Departing employees accessing unusual data
 
 ---
 
+## 4.14 Microsoft Priva
+
+### Overview
+
+**What is Microsoft Priva?**: Microsoft Priva is a privacy risk management solution that helps organizations proactively identify and protect personal data, automate privacy operations, and build a privacy-resilient culture.
+
+**Purpose**: Helps organizations meet privacy regulations (GDPR, CCPA, etc.) by providing visibility into personal data, managing privacy risks, and handling subject rights requests efficiently.
+
+**Portal**: Accessed through the Microsoft Purview compliance portal at https://compliance.microsoft.com
+
+**Key Components**:
+1. **Priva Privacy Risk Management** - Identify and mitigate privacy risks
+2. **Priva Subject Rights Requests** - Automate data subject request workflows
+
+### Priva Privacy Risk Management
+
+**Purpose**: Provides visibility into your organization's personal data and helps you identify potential privacy risks through automated policies and actionable insights.
+
+#### Privacy Risk Policies
+
+**Overexposed Personal Data**:
+- **What it detects**: Personal data that is overly accessible within the organization
+- **Use case**: Identifies files containing personal information (SSN, credit cards, etc.) shared with too many users
+- **Action**: Alerts admins to review permissions and restrict access
+- **Example**: Spreadsheet with employee SSNs shared with entire department
+
+**Data Transfers**:
+- **What it detects**: Personal data being transferred across departments, regions, or outside the organization
+- **Use case**: Monitor cross-border data transfers for GDPR compliance
+- **Action**: Flags transfers for review, especially international transfers
+- **Example**: HR data moved from EU to US subsidiaries without proper safeguards
+
+**Data Minimization**:
+- **What it detects**: Personal data that hasn't been accessed or used for an extended period
+- **Use case**: Identify stale personal data that should be deleted per retention policies
+- **Action**: Recommends deletion of unused personal data
+- **Example**: Customer data from closed accounts retained longer than necessary
+
+**Unused Personal Data**:
+- **What it detects**: Files containing personal information that haven't been accessed recently
+- **Use case**: Support "storage limitation" principle of privacy regulations
+- **Action**: Prompts data owners to review and potentially delete
+- **Example**: Marketing lists from campaigns completed 3 years ago
+
+#### Key Features
+
+**Data Profile**:
+- **Personal data overview** - Dashboard showing volume and types of personal data
+- **Data by location** - Where personal data resides (Exchange, SharePoint, OneDrive, Teams)
+- **Trend analysis** - Track personal data growth over time
+- **Risk insights** - Visual representation of privacy risk areas
+
+**Policy Matching**:
+- Uses built-in **sensitive information types** (SITs) to identify personal data:
+  - National identifiers (SSN, passport numbers)
+  - Financial data (credit cards, bank accounts)
+  - Health information (medical record numbers)
+  - Demographic data (birth dates, addresses)
+
+**Alert Management**:
+- Automated alerts when policies are triggered
+- Severity levels (low, medium, high)
+- Investigation workflows for privacy officers
+- Integration with Microsoft Teams for notifications
+
+**User Notifications**:
+- **Email notifications** - Alert data owners about privacy risks
+- **Policy tips** - In-app guidance for users when sharing personal data
+- **Training opportunities** - Educate users on privacy best practices
+
+### Priva Subject Rights Requests
+
+**Purpose**: Automates the workflow for handling data subject requests (DSRs) under privacy regulations like GDPR Article 15-22 and CCPA.
+
+#### Types of Requests Supported
+
+**Access Requests**:
+- **Right to access** (GDPR Article 15, CCPA)
+- Provide copy of all personal data held about the requestor
+- Includes data from emails, files, SharePoint sites, Teams conversations
+
+**Export Requests**:
+- **Right to data portability** (GDPR Article 20)
+- Export personal data in machine-readable format
+- CSV, JSON, or other structured formats
+
+**Delete Requests**:
+- **Right to erasure** (GDPR Article 17, CCPA deletion right)
+- Remove personal data from organizational systems
+- Supports full deletion or anonymization
+
+**Tagged List**:
+- Create custom request types for organization-specific workflows
+- Examples: "Do not sell my data" (CCPA), "Rectification" (GDPR Article 16)
+
+#### Subject Rights Request Workflow
+
+**Step 1: Request Creation**:
+- **Manual creation** - Privacy team creates request on behalf of data subject
+- **Self-service portal** - Users submit their own requests via custom form (Power Apps integration)
+- **Email intake** - Auto-create requests from emails sent to privacy mailbox
+
+**Step 2: Data Discovery**:
+- **Automated search** - AI-powered search across Microsoft 365 (Exchange, SharePoint, OneDrive, Teams)
+- **Identity matching** - Links different identifiers (email, name, employee ID) to find all relevant data
+- **Scope definition** - Define search parameters (date ranges, locations, data types)
+- **Content review** - Preview found items before collection
+
+**Step 3: Data Collection**:
+- **Secure gathering** - Collect personal data from identified locations
+- **Deduplication** - Remove duplicate items
+- **File size management** - Handle large data volumes
+- **Privacy preservation** - Redact other individuals' personal data from results
+
+**Step 4: Review**:
+- **Privacy team review** - Examine collected data before release
+- **Redaction tools** - Remove privileged or third-party personal information
+- **Annotation** - Add notes for legal review
+- **Collaboration** - Multiple reviewers can work on same request
+
+**Step 5: Completion**:
+- **Export package** - Generate secure download package for data subject
+- **Audit trail** - Complete log of all actions taken
+- **Retention** - Store request records for compliance
+- **Response** - Provide data or confirmation of deletion to requestor
+
+#### Key Features
+
+**Automation**:
+- Reduces manual effort by up to 90%
+- Average request completion: days instead of weeks
+- Parallel processing of multiple requests
+
+**Collaboration**:
+- Assign requests to team members
+- Comments and notes for coordination
+- Status tracking and deadlines
+- Email notifications for updates
+
+**Data Insights**:
+- **Request volume trends** - Track DSR frequency over time
+- **Request types** - Distribution of access, delete, export requests
+- **Response times** - Monitor SLA compliance
+- **Data locations** - Understand where most personal data resides
+
+**Compliance Reports**:
+- Audit logs for all request activities
+- Regulatory report generation
+- Privacy impact assessment data
+- Subject rights metrics for leadership
+
+**Integration**:
+- **Microsoft Purview** - Uses same sensitivity labels and classification
+- **eDiscovery** - Leverages Advanced eDiscovery technology
+- **Power Automate** - Custom workflow automation
+- **Microsoft Teams** - Notifications and collaboration
+
+### Privacy Assessment
+
+**Purpose**: Conduct privacy impact assessments and track privacy initiatives across your organization.
+
+**Data Processing Activities**:
+- Catalog of data processing operations
+- GDPR Article 30 record of processing activities
+- Data flow mapping
+- Third-party processor tracking
+
+**Risk Assessment**:
+- Privacy risk scoring
+- Impact and likelihood evaluation
+- Mitigation tracking
+- Compliance gap analysis
+
+### Licensing Requirements
+
+**Microsoft Priva Privacy Risk Management**:
+- Requires Microsoft 365 E3/E5, Microsoft 365 A3/A5, or standalone license
+- Per-user licensing model
+- Trial available
+
+**Microsoft Priva Subject Rights Requests**:
+- Separate license from Privacy Risk Management
+- Can be purchased independently
+- Per-user or tenant-level pricing options
+
+**Note**: Both solutions require underlying Microsoft 365 subscriptions for the data they protect.
+
+### Privacy Risk Management vs Data Loss Prevention
+
+| Feature | Priva Privacy Risk | DLP |
+|---------|-------------------|-----|
+| **Focus** | Privacy risk and compliance | Data loss prevention |
+| **Primary Goal** | Manage personal data responsibly | Prevent data leakage |
+| **Detection** | Overexposure, transfers, minimization | Sensitive data sharing outside organization |
+| **Action** | Alerts, user education, risk reporting | Block, warn, or allow with policy tips |
+| **Use Case** | GDPR/CCPA compliance, privacy program | Protect trade secrets, prevent accidental sharing |
+| **User Experience** | Background monitoring, periodic notifications | Real-time blocking or warnings |
+| **Reporting** | Privacy risk dashboard, trend analysis | DLP incidents, policy matches, false positives |
+
+### Best Practices
+
+**Getting Started**:
+1. **Start with discovery** - Run Privacy Risk Management for 30 days to baseline
+2. **Focus on high-risk data** - Prioritize financial, health, and identity data
+3. **Enable overexposed data policy first** - Quick wins and immediate risk reduction
+4. **Pilot Subject Rights Requests** - Test with small team before full deployment
+5. **Educate users** - Explain why privacy matters, not just compliance
+
+**Ongoing Management**:
+- **Regular policy review** - Adjust thresholds based on organizational risk tolerance
+- **Automate where possible** - Use Power Automate for routine privacy tasks
+- **Measure effectiveness** - Track metrics like risk reduction, DSR response times
+- **Cross-team collaboration** - Include legal, IT, security, and business units
+- **Privacy by design** - Use Priva insights to influence new system design
+
+**Subject Rights Request Optimization**:
+- **Set clear SLAs** - Define response timeframes (GDPR: 30 days)
+- **Create templates** - Standardize responses for common request types
+- **Assign dedicated team** - Designate privacy specialists for complex requests
+- **Test regularly** - Run mock requests quarterly to validate process
+- **Document everything** - Maintain audit trails for regulatory inquiries
+
+### Common Scenarios
+
+**Scenario 1: GDPR Compliance**:
+- Problem: European customers requesting access to their personal data
+- Solution: Use Subject Rights Requests to automatically discover and export data across Microsoft 365
+- Outcome: Respond within 30-day GDPR deadline with complete data package
+
+**Scenario 2: Employee Data Exposure**:
+- Problem: HR spreadsheets with salary data shared too broadly
+- Solution: Overexposed Personal Data policy detects and alerts HR team
+- Outcome: Permissions restricted, risk mitigated, audit trail created
+
+**Scenario 3: Data Minimization**:
+- Problem: Customer data retained longer than necessary
+- Solution: Unused Personal Data policy identifies stale customer records
+- Outcome: Delete unnecessary data, reduce storage costs, improve compliance posture
+
+**Scenario 4: Cross-Border Transfer**:
+- Problem: Need to track personal data moving between EU and US offices
+- Solution: Data Transfer policy monitors international data movement
+- Outcome: Visibility into transfers, ensure adequate safeguards (SCCs, BCRs)
+
+**Scenario 5: "Do Not Sell" Requests (CCPA)**:
+- Problem: California consumers exercising CCPA opt-out rights
+- Solution: Custom Subject Rights Request type for "Do Not Sell" preference
+- Outcome: Track preferences, update marketing systems, maintain compliance records
+
+### Integration with Microsoft Purview
+
+**Unified Compliance Platform**:
+- Shares sensitive information types with Information Protection
+- Uses trainable classifiers for personal data detection
+- Integrates with Compliance Manager for privacy assessments
+- Leverages Microsoft 365 retention for DSR data lifecycle
+
+**Enhanced with Other Purview Solutions**:
+- **Sensitivity Labels** - Automatically apply privacy labels to personal data
+- **DLP** - Combine privacy risk policies with DLP for comprehensive protection
+- **Insider Risk Management** - Correlate privacy risks with user behavior analytics
+- **Audit** - Complete audit trail of all privacy operations
+
+---
+
 ## Comparison Tables
 
 ### Retention vs Sensitivity Labels
