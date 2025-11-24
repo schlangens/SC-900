@@ -17,7 +17,7 @@
 3. **Prevent data loss** - Stop sensitive data from leaving your organization through monitoring and blocking
 4. **Govern your data** - Manage data lifecycle with retention policies and records management
 
-**Portal**: https://compliance.microsoft.com (Microsoft Purview compliance portal, formerly Microsoft 365 compliance center)
+**Portal**: https://purview.microsoft.com/ (Microsoft Purview compliance portal, formerly Microsoft 365 compliance center)
 
 ### Purview Compliance Portal Sections
 
@@ -1878,7 +1878,7 @@ Look for: Departing employees accessing unusual data
 
 **Purpose**: Helps organizations meet privacy regulations (GDPR, CCPA, etc.) by providing visibility into personal data, managing privacy risks, and handling subject rights requests efficiently.
 
-**Portal**: Accessed through the Microsoft Purview compliance portal at https://compliance.microsoft.com
+**Portal**: Accessed through the Microsoft Purview compliance portal at https://purview.microsoft.com/
 
 **Key Components**:
 1. **Priva Privacy Risk Management** - Identify and mitigate privacy risks
@@ -2763,7 +2763,7 @@ Need BOTH? → Apply BOTH labels!
    - Which solution for which problem
 
 4. **Portal locations**:
-   - compliance.microsoft.com for most Purview features
+   - purview.microsoft.com for most Purview features
    - Know where to find each tool
 
 5. **Licensing requirements**:
