@@ -2135,6 +2135,491 @@ Look for: Departing employees accessing unusual data
 
 ---
 
+## 4.15 Azure Governance and Compliance Tools
+
+### Overview
+
+**Azure Governance**: Azure provides built-in tools for governance, compliance, and resource management that help organizations enforce standards, prevent configuration drift, and protect critical resources from unauthorized changes.
+
+**Key Tools**:
+1. **Azure Policy** - Define and enforce organizational standards and compliance requirements
+2. **Azure Blueprints** - Package governance artifacts for repeatable, compliant deployments
+3. **Azure Resource Locks** - Protect critical resources from accidental deletion or modification
+
+**Portal**: https://portal.azure.com
+
+### Azure Policy
+
+#### What is Azure Policy?
+
+**Definition**: Azure Policy is a service that helps you create, assign, and manage policies that enforce rules and effects over your Azure resources to ensure they stay compliant with corporate standards and service level agreements.
+
+**Purpose**:
+- **Enforce compliance** - Automatically enforce organizational standards across Azure resources
+- **Assess compliance** - Continuously evaluate resources against policies
+- **Prevent non-compliance** - Block deployment of non-compliant resources
+- **Audit configuration** - Track and report on resource compliance status
+
+**Key Capabilities**:
+- **Built-in policies** - 100+ pre-defined policies for common scenarios
+- **Custom policies** - Create your own policies using JSON
+- **Policy initiatives** - Group related policies together (policy sets)
+- **Compliance dashboard** - Visual representation of compliance status
+- **Remediation** - Automatically fix non-compliant resources
+
+#### How Azure Policy Works
+
+**Policy Definition**:
+- **Rules** - Define what to evaluate (e.g., "require tag", "allowed VM sizes")
+- **Effects** - What happens when condition is met (Deny, Audit, Append, Modify, etc.)
+- **Parameters** - Make policies reusable with different values
+- **Example**: "Require 'CostCenter' tag on all resources"
+
+**Policy Assignment**:
+- **Scope** - Where the policy applies (Management Group, Subscription, Resource Group)
+- **Exclusions** - Specific resources exempt from the policy
+- **Parameters** - Provide values for policy parameters
+- **Enforcement** - Can be enabled or disabled (useful for testing)
+
+**Common Policy Effects**:
+
+| Effect | Action | Use Case |
+|--------|--------|----------|
+| **Deny** | Block resource creation/update | Prevent deployment of non-compliant resources (e.g., block VMs without disk encryption) |
+| **Audit** | Log non-compliance in activity log | Track compliance without blocking (e.g., identify resources missing tags) |
+| **AuditIfNotExists** | Audit if related resource doesn't exist | Check for required configurations (e.g., VM must have backup enabled) |
+| **DeployIfNotExists** | Automatically deploy related resource | Auto-remediate (e.g., deploy Log Analytics agent if missing) |
+| **Append** | Add properties to resource | Force configuration (e.g., add required tags) |
+| **Modify** | Add, update, or remove resource properties | Change existing properties (e.g., add managed identity) |
+| **Disabled** | Turn off policy evaluation | Temporarily disable without removing assignment |
+
+#### Policy Initiatives (Policy Sets)
+
+**What is an Initiative?**: A collection of policy definitions grouped together toward a single compliance goal.
+
+**Benefits**:
+- **Simplified management** - Assign multiple related policies at once
+- **Compliance frameworks** - Map to regulatory standards (PCI-DSS, HIPAA, ISO 27001)
+- **Logical grouping** - Organize policies by purpose (security, cost, naming)
+
+**Built-in Initiatives**:
+- **Azure Security Benchmark** - Microsoft's security best practices for Azure
+- **ISO 27001** - Information security management standards
+- **PCI DSS 3.2.1** - Payment card industry compliance
+- **NIST SP 800-53** - Federal security controls
+- **HIPAA/HITRUST** - Healthcare compliance
+
+**Example Initiative - "Require Tags"**:
+- Policy 1: Require 'Environment' tag
+- Policy 2: Require 'CostCenter' tag
+- Policy 3: Require 'Owner' tag
+- Policy 4: Inherit tags from resource group
+
+#### Compliance Evaluation
+
+**Compliance States**:
+- **Compliant** - Resource meets policy requirements
+- **Non-compliant** - Resource violates policy
+- **Conflicting** - Multiple policies with conflicting requirements
+- **Not started** - Policy not yet evaluated
+- **Exempt** - Resource excluded from evaluation
+
+**Evaluation Timing**:
+- **On deployment** - Evaluated when resource is created or updated
+- **Periodic scan** - Existing resources evaluated every 24 hours
+- **On-demand** - Trigger compliance evaluation manually
+
+**Compliance Reporting**:
+- **Overall compliance percentage** - Across all assigned policies
+- **Resource compliance** - Which resources are non-compliant
+- **Policy compliance** - Which policies have violations
+- **Export capabilities** - Download compliance data for reporting
+
+#### Common Use Cases
+
+**Security & Compliance**:
+- ✓ Require encryption for storage accounts
+- ✓ Enforce HTTPS-only for web apps
+- ✓ Block public IP addresses on VMs
+- ✓ Require Azure Defender on subscriptions
+- ✓ Audit VMs without managed disks
+
+**Cost Management**:
+- ✓ Restrict VM sizes to approved SKUs
+- ✓ Limit Azure regions for resource deployment
+- ✓ Require auto-shutdown for development VMs
+- ✓ Enforce resource tagging for cost allocation
+
+**Naming & Tagging**:
+- ✓ Enforce naming conventions (e.g., "vm-prod-eastus-001")
+- ✓ Require specific tags on all resources
+- ✓ Inherit tags from resource group or subscription
+- ✓ Append tags automatically
+
+**Network Security**:
+- ✓ Require Network Security Groups on subnets
+- ✓ Block RDP/SSH from internet
+- ✓ Enforce Azure Firewall for virtual networks
+- ✓ Require VPN Gateway for site-to-site connectivity
+
+### Azure Blueprints
+
+#### What is Azure Blueprints?
+
+**Definition**: Azure Blueprints enables cloud architects and IT teams to define a repeatable set of Azure resources that implements and adheres to an organization's standards, patterns, and requirements.
+
+**Purpose**: Package governance artifacts (policies, role assignments, ARM templates, resource groups) into a single blueprint definition that can be deployed consistently across multiple subscriptions.
+
+**Key Difference from ARM Templates**:
+- **ARM Templates** - Deploy resources
+- **Blueprints** - Deploy resources AND governance (policies, roles, locks) with ongoing relationship
+
+#### Blueprint Components (Artifacts)
+
+**What can be included in a Blueprint?**
+
+1. **Resource Groups** - Container for resources
+2. **ARM Templates** - Deploy Azure resources
+3. **Policy Assignments** - Apply policies to resources
+4. **Role Assignments** - Grant RBAC permissions
+5. **Resource Locks** - Protect deployed resources (discussed below)
+
+**Blueprint Versions**:
+- Blueprints support versioning (e.g., v1.0, v1.1, v2.0)
+- Published versions are immutable
+- Assignments can be updated to new versions
+- Provides change tracking and rollback capability
+
+#### Blueprint Lifecycle
+
+**1. Create Blueprint**:
+- Define blueprint with name and description
+- Add artifacts (policies, roles, templates)
+- Set parameters (make blueprint reusable)
+- Save as draft
+
+**2. Publish Blueprint**:
+- Assign version number (e.g., "1.0")
+- Add change notes describing updates
+- Published blueprints are read-only
+- Can create new versions from existing
+
+**3. Assign Blueprint**:
+- Select target subscription
+- Choose blueprint version
+- Provide parameter values
+- Set lock mode (None, Read-Only, Do Not Delete)
+- Blueprint service deploys artifacts
+
+**4. Update Assignment**:
+- Change to different blueprint version
+- Update parameters
+- Modify lock settings
+- Track changes over time
+
+**5. Unassign Blueprint**:
+- Remove blueprint from subscription
+- Choose whether to keep or delete deployed resources
+- Removes locks and policy assignments
+
+#### Blueprint Parameters
+
+**Static Parameters**:
+- Hardcoded in blueprint definition
+- Same value for all assignments
+- Example: Approved Azure regions = ["East US", "West US"]
+
+**Dynamic Parameters**:
+- Provided at assignment time
+- Different values per assignment
+- Example: Environment name (Dev, Test, Prod)
+- Allows blueprint reuse across scenarios
+
+#### Lock Modes in Blueprints
+
+When assigning a blueprint, you can apply locks to resources deployed by the blueprint:
+
+**None** (No lock):
+- Resources can be modified or deleted
+- Standard RBAC permissions apply
+- Use for development/testing
+
+**Read-Only**:
+- Prevents modification of resources
+- Resources can be read but not changed
+- Cannot delete resources
+- Use for production stability
+
+**Do Not Delete**:
+- Allows modification but prevents deletion
+- Resources can be updated
+- Cannot delete resources
+- Balance between flexibility and protection
+
+**Special Consideration**: Blueprint locks override standard RBAC permissions, even for Owners, ensuring governance compliance.
+
+#### Common Use Cases
+
+**Cloud Adoption Framework**:
+- **Landing zones** - Deploy compliant subscription environments
+- **Hub-spoke networking** - Standardized network topology
+- **Shared services** - Common infrastructure components
+- **Workload subscriptions** - Pre-configured environments
+
+**Compliance & Governance**:
+- **ISO 27001 compliance** - Deploy required controls
+- **PCI-DSS compliance** - Payment processing environment
+- **DoD Impact Level 5** - Government security requirements
+- **HIPAA compliance** - Healthcare data protection
+
+**Environment Standardization**:
+- **Development environment** - Consistent dev setup
+- **Production environment** - Hardened production config
+- **DR environment** - Disaster recovery setup
+- **Multi-region deployment** - Same config across regions
+
+**Example Blueprint - "Secure Production Environment"**:
+- Resource Group for networking
+- ARM Template: Virtual Network with NSGs
+- ARM Template: Azure Firewall
+- Policy: Require encryption on all storage
+- Policy: Block public IP on VMs
+- Role: Network Contributor to network team
+- Lock: Do Not Delete on critical infrastructure
+
+#### Built-in Blueprint Samples
+
+Microsoft provides several built-in blueprints:
+
+- **Azure Security Benchmark Foundation** - Security baseline
+- **ISO 27001** - Information security controls
+- **PCI-DSS v3.2.1** - Payment card compliance
+- **UK OFFICIAL and UK NHS** - UK government standards
+- **Canada Federal PBMM** - Canadian government compliance
+- **FedRAMP Moderate** - US federal compliance
+- **HIPAA/HITRUST** - Healthcare compliance
+
+### Azure Resource Locks
+
+#### What is a Resource Lock?
+
+**Definition**: Azure Resource Locks prevent accidental deletion or modification of critical Azure resources by applying a lock at the subscription, resource group, or individual resource level.
+
+**Purpose**:
+- **Prevent accidental deletion** - Stop users from deleting production resources
+- **Prevent accidental modification** - Block changes to critical configurations
+- **Protect infrastructure** - Safeguard mission-critical resources
+- **Governance enforcement** - Ensure resources remain in desired state
+
+**Key Characteristic**: Locks apply to ALL users, regardless of RBAC permissions. Even subscription Owners cannot delete or modify locked resources without first removing the lock.
+
+#### Lock Types
+
+**CanNotDelete (Delete Lock)**:
+- **Read** - ✓ Allowed
+- **Modify** - ✓ Allowed
+- **Delete** - ✗ Blocked
+- **Use case**: Protect resources that can be updated but must not be deleted (e.g., production databases)
+
+**ReadOnly (Read-Only Lock)**:
+- **Read** - ✓ Allowed
+- **Modify** - ✗ Blocked (equivalent to Reader role for all users)
+- **Delete** - ✗ Blocked
+- **Use case**: Prevent all changes to critical resources (e.g., compliance baseline configurations)
+
+#### Lock Scope and Inheritance
+
+**Lock Scope Levels**:
+1. **Subscription** - Applies to all resources in subscription
+2. **Resource Group** - Applies to all resources in the resource group
+3. **Resource** - Applies only to specific resource
+
+**Inheritance Hierarchy**:
+```
+Subscription Lock (CanNotDelete)
+  └─ Resource Group Lock (ReadOnly)
+      └─ Individual Resource Lock (CanNotDelete)
+          └─ MOST RESTRICTIVE WINS: ReadOnly applied
+```
+
+**Inheritance Rules**:
+- Child resources inherit locks from parent
+- Most restrictive lock wins when multiple locks apply
+- ReadOnly is more restrictive than CanNotDelete
+- Locks cannot be "downgraded" at child level
+
+#### Lock Behavior Examples
+
+**CanNotDelete Lock on VM**:
+- ✓ Can start/stop VM
+- ✓ Can resize VM
+- ✓ Can add data disk
+- ✗ Cannot delete VM
+
+**ReadOnly Lock on Storage Account**:
+- ✓ Can list storage keys
+- ✓ Can read blob data
+- ✗ Cannot create new containers
+- ✗ Cannot upload new files
+- ✗ Cannot regenerate access keys
+- ✗ Cannot delete storage account
+
+**ReadOnly Lock on Resource Group**:
+- ✗ Cannot add new resources (POST operations blocked)
+- ✗ Cannot modify existing resources (PUT/PATCH blocked)
+- ✓ Can read/view resources (GET operations allowed)
+
+**Special Cases**:
+- **Virtual Machines**: ReadOnly lock prevents start/stop (modifies power state)
+- **Storage Accounts**: ReadOnly lock doesn't prevent data plane operations (read/write data)
+- **Key Vault**: ReadOnly lock doesn't prevent secret retrieval (data plane)
+
+#### Managing Locks
+
+**Creating a Lock**:
+1. Navigate to resource/resource group/subscription
+2. Select "Locks" under Settings
+3. Click "+ Add"
+4. Provide lock name and notes
+5. Select lock type (CanNotDelete or ReadOnly)
+6. Save
+
+**Removing a Lock**:
+1. Navigate to locked resource
+2. Select "Locks" under Settings
+3. Find the lock to remove
+4. Click Delete (trash icon)
+5. Confirm removal
+
+**Required Permission**: Must have `Microsoft.Authorization/locks/*` permission (Owner or User Access Administrator role)
+
+#### Common Use Cases
+
+**Production Protection**:
+- **Production databases** - CanNotDelete to prevent accidental deletion
+- **Production virtual networks** - ReadOnly to prevent network changes
+- **Production storage** - CanNotDelete to protect business data
+- **Critical VMs** - CanNotDelete to protect infrastructure
+
+**Compliance Requirements**:
+- **Audit logs storage** - ReadOnly to prevent tampering
+- **Compliance baseline config** - ReadOnly to maintain compliance state
+- **Regulatory resources** - CanNotDelete for retention requirements
+
+**Cost Management**:
+- **Expensive resources** - CanNotDelete to prevent costly redeployment
+- **Reserved instances** - CanNotDelete to protect investment
+
+**Shared Resources**:
+- **Shared services** - ReadOnly to prevent modification by teams
+- **Hub network** - CanNotDelete to protect connectivity
+
+#### Best Practices
+
+**Lock Strategy**:
+1. **Lock subscriptions** - Prevent deletion of entire subscriptions
+2. **Lock production resource groups** - Protect production environments
+3. **Lock specific critical resources** - Database servers, virtual networks
+4. **Document locks** - Use Notes field to explain why lock exists
+5. **Review regularly** - Audit locks quarterly to ensure still needed
+
+**When to Use Which Lock**:
+- **CanNotDelete**: Resources that need updates but must be protected (databases, VMs)
+- **ReadOnly**: Configuration that should never change (network topology, compliance settings)
+
+**Lock Management**:
+- Centralize lock management through Azure Policy or Blueprints
+- Use descriptive lock names (e.g., "Prevent deletion of prod DB per policy 123")
+- Add notes explaining lock purpose and owner contact
+- Implement approval process for lock removal
+
+### Comparison: Policy vs Blueprints vs Locks
+
+| Feature | Azure Policy | Azure Blueprints | Resource Locks |
+|---------|-------------|------------------|----------------|
+| **Purpose** | Enforce compliance standards | Package & deploy governance | Prevent deletion/modification |
+| **Scope** | Evaluate resources against rules | Deploy complete environments | Protect specific resources |
+| **When Applied** | Continuous evaluation | Assignment time | Immediately upon creation |
+| **Effect on Existing** | Evaluates existing resources | Can update assignments | Applies to current state |
+| **Prevents Actions** | Can deny deployments | N/A (enables deployments) | Blocks delete/modify operations |
+| **Remediation** | Can auto-fix (DeployIfNotExists) | Blueprint updates | N/A |
+| **Components** | Policy definitions | Policies + Roles + Templates + Locks | Just locks |
+| **Versioning** | No versioning | Full versioning | N/A |
+| **Inheritance** | From scope (MG/Sub/RG) | From blueprint assignment | From parent resources |
+| **Override** | Can be exempted | Lock mode controls | Cannot override (must remove) |
+| **Use Case** | "Enforce all storage uses encryption" | "Deploy ISO 27001 compliant subscription" | "Prevent deletion of production DB" |
+
+### Integration Scenarios
+
+**Scenario 1: Complete Governance Stack**:
+1. **Blueprint** - Deploy landing zone with network, policies, and roles
+2. **Policy** - Enforce ongoing compliance (encryption, tagging, regions)
+3. **Lock** - Protect critical infrastructure (network, shared services)
+
+**Scenario 2: New Production Subscription**:
+1. Assign **Blueprint** "Production Environment v2.0"
+   - Deploys networking infrastructure
+   - Applies security policies
+   - Assigns RBAC roles
+   - Sets CanNotDelete lock on resource group
+2. **Policies** continuously evaluate all resources
+3. **Lock** prevents accidental deletion
+
+**Scenario 3: Compliance Requirement**:
+- **Policy Initiative**: "ISO 27001" assigned to subscription
+  - 100+ individual policies for ISO compliance
+  - Generates compliance reports
+  - Remediates non-compliant resources
+- **Blueprint**: "ISO 27001 Landing Zone"
+  - Deploys required infrastructure
+  - Pre-configured with ISO policies
+- **Locks**: ReadOnly on audit log storage
+
+### Licensing & Requirements
+
+**Azure Policy**:
+- **Basic**: Included with Azure subscription (no additional cost)
+- **Advanced**: Azure Security Center integration (requires Security Center license)
+- **Availability**: All Azure subscriptions
+
+**Azure Blueprints**:
+- **Cost**: Free (pay only for deployed resources)
+- **Availability**: All Azure subscriptions
+- **Preview features**: Some capabilities in public preview
+
+**Resource Locks**:
+- **Cost**: Free
+- **Availability**: All Azure subscriptions
+- **Permissions**: Owner or User Access Administrator role required
+
+### Exam Tips for SC-900
+
+**Understand the purpose of each tool**:
+- **Policy** = Evaluate and enforce (continuous compliance)
+- **Blueprints** = Package and deploy (repeatable governance)
+- **Locks** = Protect and prevent (safeguard resources)
+
+**Know when to use each**:
+- "Ensure all storage accounts have encryption" → **Policy**
+- "Deploy a compliant subscription environment" → **Blueprint**
+- "Prevent deletion of production database" → **Resource Lock**
+
+**Policy Effects to remember**:
+- **Deny** - Block non-compliant deployments
+- **Audit** - Log but don't block
+- **DeployIfNotExists** - Auto-remediate
+
+**Lock Types**:
+- **CanNotDelete** - Can modify, cannot delete
+- **ReadOnly** - Cannot modify or delete
+
+**Blueprint artifacts**:
+- Resource Groups, ARM Templates, Policies, Role Assignments, Locks
+
+**Key principle**: Locks apply to everyone (even Owners), overriding RBAC permissions.
+
+---
+
 ## Comparison Tables
 
 ### Retention vs Sensitivity Labels
